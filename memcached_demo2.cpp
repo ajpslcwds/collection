@@ -1,3 +1,5 @@
+//  g++ -std=c++11 -o memcached_demo2 memcached_demo2.cpp -lmemcached -pthread -g
+
 #include <chrono>
 #include <iostream>
 #include <libmemcached/memcached.h>
@@ -56,7 +58,7 @@ class TestMemcached
         auto start_set = std::chrono::high_resolution_clock::now();
         int failed_cnt = 0;
         // 设置 10万条数据
-        char *buff = new char[sizeof(TestData) + 1];
+        char *buff = new char[sizeof(TestData)];
         for (int i = 0; i < num_items; ++i)
         {
             std::string key = base_key + std::to_string(i);
@@ -80,6 +82,7 @@ class TestMemcached
             //     std::this_thread::sleep_for(std::chrono::milliseconds(1));
             // }
         }
+        delete[] buff;
 
         // 记录 set 操作结束时间
         auto end_set = std::chrono::high_resolution_clock::now();
