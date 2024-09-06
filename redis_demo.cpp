@@ -13,7 +13,7 @@ struct TestData
 {
     int id[20];
     float f_data[20];
-    char c_data[64];
+    char c_data[64]; // save key
 };
 
 class TestRedis
