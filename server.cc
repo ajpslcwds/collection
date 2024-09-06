@@ -22,7 +22,7 @@ void handle_client(tcp::socket& socket) {
       std::cout << "Received: " << std::string(data, length) << std::endl;
 
       // 发送响应
-      std::string response = "Message received";
+      std::string response = "Message received:";
       boost::asio::write(
           socket, boost::asio::buffer(response + std::string(data, length)),
           error);
