@@ -9,10 +9,12 @@
 const std::string base_key = "this_is_a_test_key_";
 const std::string bin_base_key = "this_is_a_test_bin_key_";
 
+const int ARRER_NUM=200;
+
 struct TestData
 {
-    int id[20];
-    float f_data[20];
+    int id[ARRER_NUM];
+    float f_data[ARRER_NUM];
     char c_data[64]; // save key
 };
 
@@ -21,10 +23,10 @@ class TestRedis
   public:
     TestRedis(const std::string &host, int port)
     {
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < ARRER_NUM; i++)
         {
             data.id[i] = i;
-            data.f_data[i] = i * 1.0;
+            data.f_data[i] = i * 1.1;
             memset(&data.c_data, 0x0, sizeof(data.c_data));
         }
 
@@ -56,7 +58,7 @@ class TestRedis
     std::string serialize(const TestData &data)
     {
         std::ostringstream oss;
-        for (int i = 0; i < 20; ++i)
+        for (int i = 0; i < ARRER_NUM; ++i)
         {
             oss << data.id[i] << "," << data.f_data[i] << ",";
         }
@@ -71,7 +73,7 @@ class TestRedis
         std::istringstream iss(str);
         std::string token;
 
-        for (int i = 0; i < 20; ++i)
+        for (int i = 0; i < ARRER_NUM; ++i)
         {
             std::getline(iss, token, ',');
             data.id[i] = std::stoi(token);
