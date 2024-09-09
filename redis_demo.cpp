@@ -9,7 +9,7 @@
 const std::string base_key = "this_is_a_test_key_";
 const std::string bin_base_key = "this_is_a_test_bin_key_";
 
-const int ARRER_NUM=200;
+const int ARRER_NUM = 20;
 
 struct TestData
 {
@@ -21,14 +21,27 @@ struct TestData
 class TestRedis
 {
   public:
+    TestRedis(const char *unix_socket_path)
+    {
+        context = redisConnectUnix(unix_socket_path);
+
+        if (context == nullptr || context->err)
+        {
+            if (context)
+            {
+                std::cerr << "Error: " << context->errstr << "\n";
+                redisFree(context);
+            }
+            else
+            {
+                std::cerr << "Can't allocate redis context\n";
+            }
+            throw std::runtime_error("Failed to connect to Redis");
+        }
+    }
+
     TestRedis(const std::string &host, int port)
     {
-        for (int i = 0; i < ARRER_NUM; i++)
-        {
-            data.id[i] = i;
-            data.f_data[i] = i * 1.1;
-            memset(&data.c_data, 0x0, sizeof(data.c_data));
-        }
 
         context = redisConnect(host.c_str(), port);
         if (context == nullptr || context->err)
@@ -43,6 +56,16 @@ class TestRedis
                 std::cerr << "Can't allocate redis context\n";
             }
             throw std::runtime_error("Failed to connect to Redis");
+        }
+    }
+
+    void InitData()
+    {
+        for (int i = 0; i < ARRER_NUM; i++)
+        {
+            data.id[i] = i;
+            data.f_data[i] = i * 1.1;
+            memset(&data.c_data, 0x0, sizeof(data.c_data));
         }
     }
 
@@ -137,7 +160,6 @@ class TestRedis
             std::string key = bin_base_key + std::to_string(i);
             strncpy(data.c_data, key.c_str(), sizeof(data.c_data));
             memcpy(buff, &data, sizeof(TestData));
-            std::string value = serialize(data); // 序列化数据
             redisReply *reply = (redisReply *)redisCommand(context, "SET %s %b", key.c_str(), buff, sizeof(TestData));
             freeReplyObject(reply);
         }
@@ -200,19 +222,22 @@ int main(int argc, char **argv)
 
     try
     {
-        TestRedis tester("127.0.0.1", 6379);
+        // TestRedis tester("127.0.0.1", 6379);
+        TestRedis tester("/var/run/redis/redis.sock");
+        tester.InitData();
+
         int num_operations = 1000 * 200;
 
         if (set_flag & OPER_TYPE::SET)
         {
-            tester.TestSet(num_operations);
+            // tester.TestSet(num_operations);
             tester.TestBinSet(num_operations);
             // tester.TestHSet(num_operations);
         }
         if (set_flag & OPER_TYPE::GET)
         {
 
-            tester.TestGet(num_operations);
+            // tester.TestGet(num_operations);
             tester.TestBinGet(num_operations);
             // tester.TestHGet(num_operations);
         }
