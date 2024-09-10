@@ -9,7 +9,9 @@
                 "-g",
                 "${file}",
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
+                "${fileDirname}/${fileBasenameNoExtension}",
+                "-lhiredis",
+                "-pthread"
             ],
             "options": {
                 "cwd": "${fileDirname}"
