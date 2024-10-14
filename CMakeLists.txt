@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.10)
+PROJECT(DRSdk)
+SUBDIRS(drsdk)
+SUBDIRS(drsdk_app)
+SUBDIRS(drsdk_fake_ds)
