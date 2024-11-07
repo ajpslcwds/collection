@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/execD.dir/main.cc.o -o execD  -ldl 

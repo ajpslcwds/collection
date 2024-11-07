@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -shared -Wl,-soname,liblibC.so -o liblibC.so CMakeFiles/libC.dir/libC.cpp.o   -L/home/wzq/code/wubuzhidao/libC/../libB  -Wl,-rpath,/home/wzq/code/wubuzhidao/libC/../libB ../libB/liblibB.a ../libA/liblibA.a 
