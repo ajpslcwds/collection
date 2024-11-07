@@ -1,18 +1,23 @@
-#include "string.h"
+#include <chrono>
 #include <iostream>
-#include <string>
+#include <mutex>
+#include <sstream>
+#include <stdint.h>
+#include <string.h>
+#include <thread>
 
 using namespace std;
 
-void test(char *buf)
-{
-    strcpy(buf, "hello");
-}
-
 int main()
 {
-    std::string str(10, '\0');
-    test(const_cast<char *>(str.c_str()));
-    std::cout << str << std::endl;
+    char temp[10] = "123456789";
+    cout << temp << endl;
+    strncpy(temp, "aaaaaaa", 3);
+    cout << temp << endl;
+
+    float f = 12345678.1234567;
+    printf("%.7f\n", f);
+        double d = 12345678.1234567;
+    printf("%.7f\n", d);
     return 0;
 }
