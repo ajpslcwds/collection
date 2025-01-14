@@ -49,18 +49,25 @@ class AicManager
     }
 
     int32_t Init(const std::string &config_json);
-    int32_t LoadConfig();
-    int32_t LoadJsonData(const std::string &type, const std::string &path);
 
     int32_t DealTDFQuery(std::string &json_string);
     int32_t DealPDIQuery(std::string &json_string);
+    uint16_t GetPort() const
+    {
+        return port_;
+    }
 
   private:
     AicManager() = default;
+    int32_t LoadConfig();
+    int32_t LoadJsonData(const std::string &type, const std::string &path);
+
+    int32_t GetFilePos(const std::string &type);
 
   private:
     std::string config_json_ = "";
     std::string spm_data_path_ = "";
+    uint16_t port_ = 18080;
 
     std::unordered_map<std::string, MapJsonPtr> spm_json_data_;
 };

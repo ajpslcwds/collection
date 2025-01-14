@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/aic_app.dir/src/main.cpp.o CMakeFiles/aic_app.dir/src/aic_manager.cpp.o  -o ../bin/aic_app  -lpthread 

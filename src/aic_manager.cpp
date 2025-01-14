@@ -12,6 +12,8 @@
 #include <atomic>
 #include <filesystem>
 #include <fstream>
+#include <mutex>
+
 namespace fs = std::filesystem;
 
 struct SmpPath
@@ -41,15 +43,6 @@ int32_t AicManager::Init(const std::string &config_json)
         }
     }
 
-    for (const auto &item : spm_json_data_)
-    {
-        std::cout << item.first << ":" << item.second.size() << std::endl;
-        for (const auto &file : item.second)
-        {
-            std::cout << file.first << std::endl;
-        }
-    }
-
     return 0;
 }
 
@@ -75,13 +68,18 @@ int32_t AicManager::LoadConfig()
         spm_data_path_ = jConfig["spm_data_path"].get<std::string>();
     }
 
+    if (jConfig.contains("port"))
+    {
+        port_ = jConfig["port"].get<std::uint16_t>();
+    }
+
     return 0;
 }
 int32_t AicManager::LoadJsonData(const std::string &type, const std::string &path)
 {
     try
     {
-
+        uint32_t cnt = 0;
         for (const auto &entry : fs::directory_iterator(path))
         {
             // 如果是文件并且以 .json 结尾
@@ -102,6 +100,8 @@ int32_t AicManager::LoadJsonData(const std::string &type, const std::string &pat
                             spm_json_data_.emplace(type, MapJsonPtr());
                         }
                         spm_json_data_[type][entry.path()] = jFile;
+                        std::cout << entry.path() << " load success." << std::endl;
+                        ++cnt;
                     }
                     catch (const std::exception &e)
                     {
@@ -116,6 +116,7 @@ int32_t AicManager::LoadJsonData(const std::string &type, const std::string &pat
                 }
             }
         }
+        std::cout << type << " loaded cnt = " << cnt << std::endl;
     }
     catch (const std::exception &e)
     {
@@ -125,12 +126,32 @@ int32_t AicManager::LoadJsonData(const std::string &type, const std::string &pat
     return 0;
 }
 
+int32_t AicManager::GetFilePos(const std::string &type)
+{
+    auto cnt = spm_json_data_.count(type);
+    if (0 == cnt)
+        return 0;
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+    return std::rand() % spm_json_data_[type].size();
+}
+
 int32_t AicManager::DealTDFQuery(std::string &json_string)
 {
+    static std::string type = "tdf";
+    auto cnt = spm_json_data_.count(type);
+    if (0 == cnt)
+    {
+        std::cerr << type << " have not load any file!" << std::endl;
+        return -1;
+    }
 
-    auto &json_file_map = spm_json_data_["tdf"];
-    auto &json_file = json_file_map.begin()->second;
-    std::cout << "tdf file name:" << json_file_map.begin()->first << std::endl;
+    auto &json_file_map = spm_json_data_[type];
+    auto it = json_file_map.begin();
+    // static int32_t pos = GetFilePos(type);
+    // std::advance(it, pos);
+
+    auto &json_file = it->second;
+    std::cout << type << " file name:" << it->first << std::endl;
 
     json_string = json_file->dump();
     return 0;
@@ -138,9 +159,21 @@ int32_t AicManager::DealTDFQuery(std::string &json_string)
 
 int32_t AicManager::DealPDIQuery(std::string &json_string)
 {
-    auto &json_file_map = spm_json_data_["pdi"];
-    auto &json_file = json_file_map.begin()->second;
-    std::cout << "pdi file name:" << json_file_map.begin()->first << std::endl;
+    static std::string type = "pdi";
+    auto cnt = spm_json_data_.count(type);
+    if (0 == cnt)
+    {
+        std::cerr << type << " have not load any file!" << std::endl;
+        return -1;
+    }
+
+    auto &json_file_map = spm_json_data_[type];
+    auto it = json_file_map.begin();
+    // static int32_t pos = GetFilePos(type);
+    // std::advance(it, pos);
+
+    auto &json_file = it->second;
+    std::cout << type << " file name:" << it->first << std::endl;
 
     if (json_file->contains("chinese"))
     {

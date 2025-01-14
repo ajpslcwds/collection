@@ -36,7 +36,8 @@ void AddAicApi(crow::SimpleApp &app)
 {
     // 查询接口，GET 请求
     app.route_dynamic("/restapi").methods("GET"_method)([](const crow::request &req) {
-        // 获取 URL 中的查询参数 'name'
+        std::cout << "/restapi  url_params =" << req.url_params << std::endl;
+
         auto name = req.url_params.get("name");
         if (name)
         {
@@ -70,22 +71,19 @@ void AddAicApi(crow::SimpleApp &app)
     });
 
     // 设置接口，POST 请求
-    app.route_dynamic("/restapi/set").methods("POST"_method)([](const crow::request &req) {
-        // 获取请求体中的数据
+    app.route_dynamic("/restapi/set").methods("POST"_method, "HEAD"_method)([](const crow::request &req) {
+        std::cout << "/restapi/set  req.method =" << crow::method_name(req.method) << std::endl;
+        std::cout << "/restapi/set  req.url_params =" << req.url_params << std::endl;
+
         auto name = req.url_params.get("name");
-        auto json_data = crow::json::load(req.body);
-        if (!json_data)
-            return crow::response(400, "请求中缺少 json 内容");
         if (name)
         {
             if (std::string(name) == "C612_aic_spm_review")
             {
-                std::cout << std::string(name) + " Received message:" << req.body;
                 return crow::response(200, std::string(name) + " Received message");
             }
             else if (std::string(name) == "C612_aic_spm_result")
             {
-                std::cout << std::string(name) + " Received message:" << req.body;
                 return crow::response(200, std::string(name) + " Received message");
             }
             else
@@ -115,12 +113,12 @@ int main(int argc, char *argv[])
     }
 
     crow::SimpleApp app;
+    app.loglevel(crow::LogLevel::Debug);
 
-    AddTestApi(app);
+    // AddTestApi(app);
     AddAicApi(app);
-
-    // app.port(18080).bind("127.0.0.1").multithreaded().run();
-    app.port(18080).multithreaded().run();
+    const auto port = AicManager::GetInstance().GetPort();
+    app.port(port).multithreaded().run();
 
     return 0;
 }

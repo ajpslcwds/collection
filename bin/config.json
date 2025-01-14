@@ -1,3 +1,4 @@
 {
+    "port": 18080,
     "spm_data_path": "/home/wzq/code/aic/aic_app/spm"
 }

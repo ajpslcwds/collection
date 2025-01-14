@@ -1,0 +1,3 @@
+/home/wzq/code/aic/aic_app/build/CMakeFiles/rebuild_cache.dir
+/home/wzq/code/aic/aic_app/build/CMakeFiles/edit_cache.dir
+/home/wzq/code/aic/aic_app/build/CMakeFiles/aic_app.dir
