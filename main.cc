@@ -19,7 +19,7 @@ class Temp
 void func()
 {
     std::cout << "func_begin!" << std::endl;
-    std::async(std::launch::async, []() {
+    auto ft = std::async(std::launch::async, []() {
         std::cout << "async_begin!" << std::endl;
         std::this_thread::sleep_for(std::chrono::seconds(1));
         std::cout << "async_end!" << std::endl;
