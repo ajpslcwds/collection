@@ -1,45 +1,60 @@
 #include <atomic>
 #include <future>
 #include <iostream>
+#include <map>
 #include <memory>
+#include <mutex>
 #include <stdio.h>
 #include <string.h>
 #include <string>
 #include <thread>
+
 using namespace std;
 
-class Temp
+std::mutex g_mutex;
+std::condition_variable g_cv;
+uint32_t FastSampledStringHash(const std::string &str)
 {
-  public:
-    std::atomic<int> a{1};
-    std::atomic<int> b = 1;
-    std::atomic<bool> bTemp = true;
-};
+    // return std::hash<std::string>{}(str); //20 times slower than below
 
-void func()
-{
-    std::cout << "func_begin!" << std::endl;
-    auto ft = std::async(std::launch::async, []() {
-        std::cout << "async_begin!" << std::endl;
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-        std::cout << "async_end!" << std::endl;
-    });
-    std::cout << "func_end!" << std::endl;
+    size_t len = str.size();
+    if (len == 0)
+        return 0;
+    uint32_t hash = len; // default hash
+    size_t step = len / 4;
+    step = (step == 0 ? 1 : step);
+    for (size_t i = 0; i < 4; ++i)
+    {
+        size_t idx = i * step;
+        if (idx >= len)
+            idx = len - 1;
+        hash = (hash * 31) + static_cast<unsigned char>(str[idx]);
+    }
+    // last one
+    hash = (hash * 31) + static_cast<unsigned char>(str[len - 1]);
+    return hash;
 }
 int main(int argc, char *argv[])
-
 {
-    std::shared_ptr<Temp> temp = std::make_shared<Temp>();
-    std::shared_ptr<Temp> temp2 = nullptr;
+    std::string str = "";
+    int N = 10000;
+    str.reserve(N);
+    std::map<uint32_t, int> m;
 
-    temp2 = temp;
-    if (temp2 == temp)
+    auto begin = std::chrono::system_clock::now();
+    for (int i = 0; i < N; i++)
     {
-        printf("temp2 == temp\n");
+        auto hash = FastSampledStringHash(str);
+        m[hash % 101]++;
+        // std::cout << str << "->" << FastSampledStringHash(str) << std::endl;
+        str += i;
     }
-    else
+    auto end = std::chrono::system_clock::now();
+    std::cout << "time:" << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << std::endl;
+
+    for (auto &item : m)
     {
-        printf("temp2 != temp\n");
+        std::cout << item.first << ":" << item.second << std::endl;
     }
     return 0;
 }

@@ -12,7 +12,8 @@
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}",
                 "-std=c++17",
-                "-lpthread"
+                "-lpthread",
+                "-lhiredis"
             ],
             "options": {
                 "cwd": "${fileDirname}"
