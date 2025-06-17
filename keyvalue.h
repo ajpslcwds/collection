@@ -145,7 +145,7 @@ public:
     /**
      * One-shot constructor to initialize all data members.
      */
-    DataUnit(const ::std::string& strName, long long int lTime, ValueType eType, const Ice::optional<double>& dValue, const Ice::optional<long long int>& lValue, const Ice::optional<bool>& bValue, const Ice::optional<::std::string>& strValue) :
+    DataUnit(const ::std::string& strName, long long int lTime, ValueType eType, double dValue, long long int lValue, bool bValue, const ::std::string& strValue) :
         strName(::std::move(strName)),
         lTime(lTime),
         eType(eType),
@@ -161,7 +161,7 @@ public:
      * @return The data members in a tuple.
      */
 
-    std::tuple<const ::std::string&, const long long int&, const ValueType&, const Ice::optional<double>&, const Ice::optional<long long int>&, const Ice::optional<bool>&, const Ice::optional<::std::string>&> ice_tuple() const
+    std::tuple<const ::std::string&, const long long int&, const ValueType&, const double&, const long long int&, const bool&, const ::std::string&> ice_tuple() const
     {
         return std::tie(strName, lTime, eType, dValue, lValue, bValue, strValue);
     }
@@ -175,10 +175,10 @@ public:
     ::std::string strName;
     long long int lTime;
     ValueType eType;
-    Ice::optional<double> dValue;
-    Ice::optional<long long int> lValue;
-    Ice::optional<bool> bValue;
-    Ice::optional<::std::string> strValue;
+    double dValue;
+    long long int lValue;
+    bool bValue;
+    ::std::string strValue;
 };
 
 /// \cond INTERNAL
@@ -253,22 +253,11 @@ struct StreamableTraits< ::DSF::ValueType>
 };
 
 template<typename S>
-struct StreamWriter<::DSF::DataUnit, S>
-{
-    static void write(S* ostr, const ::DSF::DataUnit& v)
-    {
-        ostr->writeAll(v.strName, v.lTime, v.eType);
-        ostr->writeAll({1, 2, 3, 4}, v.dValue, v.lValue, v.bValue, v.strValue);
-    }
-};
-
-template<typename S>
 struct StreamReader<::DSF::DataUnit, S>
 {
     static void read(S* istr, ::DSF::DataUnit& v)
     {
-        istr->readAll(v.strName, v.lTime, v.eType);
-        istr->readAll({1, 2, 3, 4}, v.dValue, v.lValue, v.bValue, v.strValue);
+        istr->readAll(v.strName, v.lTime, v.eType, v.dValue, v.lValue, v.bValue, v.strValue);
     }
 };
 
@@ -467,7 +456,7 @@ public:
     /**
      * One-shot constructor to initialize all data members.
      */
-    DataUnit(const ::std::string& strName, ::Ice::Long lTime, ValueType eType, const IceUtil::Optional< ::Ice::Double>& dValue, const IceUtil::Optional< ::Ice::Long>& lValue, const IceUtil::Optional<bool>& bValue, const IceUtil::Optional< ::std::string>& strValue) :
+    DataUnit(const ::std::string& strName, ::Ice::Long lTime, ValueType eType, ::Ice::Double dValue, ::Ice::Long lValue, bool bValue, const ::std::string& strValue) :
         strName(strName),
         lTime(lTime),
         eType(eType),
@@ -530,10 +519,10 @@ public:
     ::std::string strName;
     ::Ice::Long lTime;
     ValueType eType;
-    IceUtil::Optional< ::Ice::Double> dValue;
-    IceUtil::Optional< ::Ice::Long> lValue;
-    IceUtil::Optional<bool> bValue;
-    IceUtil::Optional< ::std::string> strValue;
+    ::Ice::Double dValue;
+    ::Ice::Long lValue;
+    bool bValue;
+    ::std::string strValue;
 };
 /// \cond INTERNAL
 static ::Ice::ValueFactoryPtr _iceS_DataUnit_init = ::DSF::DataUnit::ice_factory();
@@ -641,10 +630,10 @@ struct StreamWriter< ::DSF::DataUnit, S>
         ostr->write(v.strName);
         ostr->write(v.lTime);
         ostr->write(v.eType);
-        ostr->write(1, v.dValue);
-        ostr->write(2, v.lValue);
-        ostr->write(3, v.bValue);
-        ostr->write(4, v.strValue);
+        ostr->write(v.dValue);
+        ostr->write(v.lValue);
+        ostr->write(v.bValue);
+        ostr->write(v.strValue);
     }
 };
 
@@ -656,10 +645,10 @@ struct StreamReader< ::DSF::DataUnit, S>
         istr->read(v.strName);
         istr->read(v.lTime);
         istr->read(v.eType);
-        istr->read(1, v.dValue);
-        istr->read(2, v.lValue);
-        istr->read(3, v.bValue);
-        istr->read(4, v.strValue);
+        istr->read(v.dValue);
+        istr->read(v.lValue);
+        istr->read(v.bValue);
+        istr->read(v.strValue);
     }
 };
 

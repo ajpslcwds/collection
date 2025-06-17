@@ -5,7 +5,7 @@
 
 using json = nlohmann::json;
 
-void DataReceiverI::sendData(const DSF::DataUnitSeq &dataSeq, const Ice::Current &)
+void DataReceiverI::sendData(DSF::DataUnitSeq dataSeq, const ::Ice::Current &current)
 {
     json allData;
 
@@ -34,31 +34,23 @@ void DataReceiverI::sendData(const DSF::DataUnitSeq &dataSeq, const Ice::Current
         {
         case DSF::ValueType::Decimal:
             entry["type"] = "Decimal";
-            if (data->dValue)
-            {
-                entry["value"] = *data->dValue;
-            }
+            entry["value"] = data->dValue;
+
             break;
         case DSF::ValueType::Integer:
             entry["type"] = "Integer";
-            if (data->lValue)
-            {
-                entry["value"] = *data->lValue;
-            }
+            entry["value"] = data->lValue;
+
             break;
         case DSF::ValueType::Bool:
             entry["type"] = "Bool";
-            if (data->bValue)
-            {
-                entry["value"] = *data->bValue;
-            }
+            entry["value"] = data->bValue;
+
             break;
         case DSF::ValueType::Text:
             entry["type"] = "Text";
-            if (data->strValue)
-            {
-                entry["value"] = *data->strValue;
-            }
+            entry["value"] = data->strValue;
+
             break;
         }
 

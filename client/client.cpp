@@ -1,58 +1,65 @@
-#include "keyvalue.h"
 #include <Ice/Ice.h>
+#include "keyvalue.h"
 #include <iostream>
 
-int main(int argc, char *argv[])
+class Client
+{
+public:
+    Client(int argc, char* argv[])
+    {
+        communicator_ = Ice::initialize(argc, argv);
+
+        auto base = communicator_->stringToProxy("receiver:default -h 192.168.30.218 -p 61236");
+        receiver_ = Ice::checkedCast<DSF::DataReceiverPrx>(base);
+
+        if (!receiver_)
+        {
+            throw std::runtime_error("Proxy cast failed");
+        }
+    }
+
+    void run()
+    {
+        DSF::DataUnitSeq dataSeq;
+
+        auto unit = std::make_shared<DSF::DataUnit>();
+        unit->strName = "sensor";
+        unit->lTime = 1718540010000;
+        unit->eType = DSF::ValueType::Text;
+        unit->strValue = "running";
+        unit->dValue = 0.0;
+        unit->lValue = 0;
+        unit->bValue = false;
+
+        dataSeq.push_back(unit);
+
+        receiver_->sendData(dataSeq);
+        std::cout << "Data sent." << std::endl;
+    }
+
+    ~Client()
+    {
+        if (communicator_)
+        {
+            communicator_->destroy();
+        }
+    }
+
+private:
+    Ice::CommunicatorPtr communicator_;
+    DSF::DataReceiverPrxPtr receiver_;  // 修正类型
+};
+
+int main(int argc, char* argv[])
 {
     try
     {
-        Ice::CommunicatorHolder ich(argc, argv);
-        auto base = ich->stringToProxy("receiver:default   -h 192.168.30.218 -p 61236");
-
-        auto receiver = DSF::DataReceiverPrx::checkedCast(base);
-        if (!receiver)
-        {
-            std::cerr << "Invalid proxy" << std::endl;
-            return 1;
-        }
-
-        DSF::DataUnitSeq seq;
-
-        {
-            auto d = new DSF::DataUnit;
-            d->strName = "temperature";
-            d->lTime = 1718540010000;
-            d->eType = DSF::ValueType::Decimal;
-            d->dValue = 22.5;
-            seq.push_back(d);
-        }
-
-        {
-            auto d = new DSF::DataUnit;
-            d->strName = "device_online";
-            d->lTime = 1718540011000;
-            d->eType = DSF::ValueType::Bool;
-            d->bValue = true;
-            seq.push_back(d);
-        }
-
-        {
-            auto d = new DSF::DataUnit;
-            d->strName = "comment";
-            d->lTime = 1718540012000;
-            d->eType = DSF::ValueType::Text;
-            d->strValue = "sensor ready";
-            seq.push_back(d);
-        }
-
-        receiver->sendData(seq);
-        std::cout << "Sent " << seq.size() << " items." << std::endl;
+        Client client(argc, argv);
+        client.run();
     }
-    catch (const std::exception &e)
+    catch (const std::exception& ex)
     {
-        std::cerr << e.what() << std::endl;
+        std::cerr << "Exception: " << ex.what() << std::endl;
         return 1;
     }
-
-    return 0;
 }

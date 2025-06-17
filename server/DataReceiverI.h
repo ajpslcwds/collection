@@ -6,7 +6,8 @@
 class DataReceiverI : public DSF::DataReceiver
 {
   public:
-    virtual void sendData(const DSF::DataUnitSeq &dataSeq, const Ice::Current &) override;
+    // virtual void sendData(const DSF::DataUnitSeq &dataSeq, const Ice::Current &) override;
+    virtual void sendData(DSF::DataUnitSeq dataSeq, const ::Ice::Current &current) override;
 };
 
 #endif

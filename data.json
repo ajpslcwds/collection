@@ -340,5 +340,119 @@
         "time": 1718540012000,
         "type": "Text",
         "value": "sensor ready"
+    },
+    {
+        "name": "temperature",
+        "time": 1718540010000,
+        "type": "Decimal",
+        "value": 22.5
+    },
+    {
+        "name": "device_online",
+        "time": 1718540011000,
+        "type": "Bool",
+        "value": true
+    },
+    {
+        "name": "comment",
+        "time": 1718540012000,
+        "type": "Text",
+        "value": "sensor ready"
+    },
+    {
+        "name": "temperature",
+        "time": 1718540010000,
+        "type": "Decimal",
+        "value": 22.5
+    },
+    {
+        "name": "device_online",
+        "time": 1718540011000,
+        "type": "Bool",
+        "value": true
+    },
+    {
+        "name": "comment",
+        "time": 1718540012000,
+        "type": "Text",
+        "value": "sensor ready"
+    },
+    {
+        "name": "temperature",
+        "time": 1718540010000,
+        "type": "Decimal",
+        "value": 22.5
+    },
+    {
+        "name": "device_online",
+        "time": 1718540011000,
+        "type": "Bool",
+        "value": true
+    },
+    {
+        "name": "comment",
+        "time": 1718540012000,
+        "type": "Text",
+        "value": "sensor ready"
+    },
+    {
+        "name": "temperature",
+        "time": 1718540010000,
+        "type": "Decimal",
+        "value": 22.5
+    },
+    {
+        "name": "device_online",
+        "time": 1718540011000,
+        "type": "Bool",
+        "value": true
+    },
+    {
+        "name": "comment",
+        "time": 1718540012000,
+        "type": "Text",
+        "value": "sensor ready"
+    },
+    {
+        "name": "temperature",
+        "time": 1718540010000,
+        "type": "Decimal",
+        "value": 22.5
+    },
+    {
+        "name": "device_online",
+        "time": 1718540011000,
+        "type": "Bool",
+        "value": true
+    },
+    {
+        "name": "comment",
+        "time": 1718540012000,
+        "type": "Text",
+        "value": "sensor ready"
+    },
+    {
+        "name": "sensor",
+        "time": 1718540010000,
+        "type": "Text",
+        "value": "running"
+    },
+    {
+        "name": "sensor",
+        "time": 1718540010000,
+        "type": "Text",
+        "value": "running"
+    },
+    {
+        "name": "sensor",
+        "time": 1718540010000,
+        "type": "Text",
+        "value": "running"
+    },
+    {
+        "name": "sensor",
+        "time": 1718540010000,
+        "type": "Text",
+        "value": "running"
     }
 ]
