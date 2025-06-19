@@ -52,8 +52,6 @@
 namespace
 {
 
-const ::IceInternal::DefaultValueFactoryInit<::DSF::DataUnit> iceC_DSF_DataUnit_init("::DSF::DataUnit");
-
 const ::std::string iceC_DSF_DataReceiver_ids[2] =
 {
     "::DSF::DataReceiver",
@@ -104,7 +102,6 @@ DSF::DataReceiver::_iceD_sendData(::IceInternal::Incoming& inS, const ::Ice::Cur
     auto istr = inS.startReadParams();
     DataUnitSeq iceP_dataSeq;
     istr->readAll(iceP_dataSeq);
-    istr->readPendingValues();
     inS.endReadParams();
     this->sendData(::std::move(iceP_dataSeq), current);
     inS.writeEmptyParams();
@@ -153,17 +150,6 @@ DSF::DataReceiver::_iceDispatch(::IceInternal::Incoming& in, const ::Ice::Curren
 }
 /// \endcond
 
-DSF::DataUnit::~DataUnit()
-{
-}
-
-const ::std::string&
-DSF::DataUnit::ice_staticId()
-{
-    static const ::std::string typeId = "::DSF::DataUnit";
-    return typeId;
-}
-
 /// \cond INTERNAL
 void
 DSF::DataReceiverPrx::_iceI_sendData(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<void>>& outAsync, const DataUnitSeq& iceP_dataSeq, const ::Ice::Context& context)
@@ -172,7 +158,6 @@ DSF::DataReceiverPrx::_iceI_sendData(const ::std::shared_ptr<::IceInternal::Outg
         [&](::Ice::OutputStream* ostr)
         {
             ostr->writeAll(iceP_dataSeq);
-            ostr->writePendingValues();
         },
         nullptr);
 }
@@ -192,6 +177,10 @@ DSF::DataReceiverPrx::ice_staticId()
     return DataReceiver::ice_staticId();
 }
 
+namespace Ice
+{
+}
+
 #else // C++98 mapping
 
 namespace
@@ -199,40 +188,6 @@ namespace
 
 const ::std::string iceC_DSF_DataReceiver_sendData_name = "sendData";
 
-}
-
-/// \cond INTERNAL
-::IceProxy::Ice::Object* ::IceProxy::DSF::upCast(DataUnit* p) { return p; }
-
-void
-::IceProxy::DSF::_readProxy(::Ice::InputStream* istr, ::IceInternal::ProxyHandle< DataUnit>& v)
-{
-    ::Ice::ObjectPrx proxy;
-    istr->read(proxy);
-    if(!proxy)
-    {
-        v = 0;
-    }
-    else
-    {
-        v = new DataUnit;
-        v->_copyFrom(proxy);
-    }
-}
-/// \endcond
-
-/// \cond INTERNAL
-::IceProxy::Ice::Object*
-IceProxy::DSF::DataUnit::_newInstance() const
-{
-    return new DataUnit;
-}
-/// \endcond
-
-const ::std::string&
-IceProxy::DSF::DataUnit::ice_staticId()
-{
-    return ::DSF::DataUnit::ice_staticId();
 }
 
 /// \cond INTERNAL
@@ -264,7 +219,6 @@ IceProxy::DSF::DataReceiver::_iceI_begin_sendData(const ::DSF::DataUnitSeq& iceP
         result->prepare(iceC_DSF_DataReceiver_sendData_name, ::Ice::Normal, context);
         ::Ice::OutputStream* ostr = result->startWriteParams(::Ice::DefaultFormat);
         ostr->write(iceP_dataSeq);
-        ostr->writePendingValues();
         result->endWriteParams();
         result->invoke(iceC_DSF_DataReceiver_sendData_name);
     }
@@ -294,101 +248,6 @@ IceProxy::DSF::DataReceiver::ice_staticId()
 {
     return ::DSF::DataReceiver::ice_staticId();
 }
-
-DSF::DataUnit::~DataUnit()
-{
-}
-
-/// \cond INTERNAL
-::Ice::Object* DSF::upCast(DataUnit* p) { return p; }
-
-/// \endcond
-::Ice::ObjectPtr
-DSF::DataUnit::ice_clone() const
-{
-    ::Ice::Object* p = new DataUnit(*this);
-    return p;
-}
-
-namespace
-{
-const ::std::string iceC_DSF_DataUnit_ids[2] =
-{
-    "::DSF::DataUnit",
-    "::Ice::Object"
-};
-
-}
-
-bool
-DSF::DataUnit::ice_isA(const ::std::string& s, const ::Ice::Current&) const
-{
-    return ::std::binary_search(iceC_DSF_DataUnit_ids, iceC_DSF_DataUnit_ids + 2, s);
-}
-
-::std::vector< ::std::string>
-DSF::DataUnit::ice_ids(const ::Ice::Current&) const
-{
-    return ::std::vector< ::std::string>(&iceC_DSF_DataUnit_ids[0], &iceC_DSF_DataUnit_ids[2]);
-}
-
-const ::std::string&
-DSF::DataUnit::ice_id(const ::Ice::Current&) const
-{
-    return ice_staticId();
-}
-
-const ::std::string&
-DSF::DataUnit::ice_staticId()
-{
-#ifdef ICE_HAS_THREAD_SAFE_LOCAL_STATIC
-    static const ::std::string typeId = "::DSF::DataUnit";
-    return typeId;
-#else
-    return iceC_DSF_DataUnit_ids[0];
-#endif
-}
-
-/// \cond STREAM
-void
-DSF::DataUnit::_iceWriteImpl(::Ice::OutputStream* ostr) const
-{
-    ostr->startSlice(ice_staticId(), -1, true);
-    ::Ice::StreamWriter< DataUnit, ::Ice::OutputStream>::write(ostr, *this);
-    ostr->endSlice();
-}
-
-void
-DSF::DataUnit::_iceReadImpl(::Ice::InputStream* istr)
-{
-    istr->startSlice();
-    ::Ice::StreamReader< DataUnit, ::Ice::InputStream>::read(istr, *this);
-    istr->endSlice();
-}
-/// \endcond
-
-namespace
-{
-const ::IceInternal::DefaultValueFactoryInit< ::DSF::DataUnit> iceC_DSF_DataUnit_init("::DSF::DataUnit");
-}
-
-::Ice::ValueFactoryPtr
-DSF::DataUnit::ice_factory()
-{
-    return ::IceInternal::factoryTable->getValueFactory(::DSF::DataUnit::ice_staticId());
-}
-
-/// \cond INTERNAL
-void
-DSF::_icePatchObjectPtr(DataUnitPtr& handle, const ::Ice::ObjectPtr& v)
-{
-    handle = DataUnitPtr::dynamicCast(v);
-    if(v && !handle)
-    {
-        IceInternal::Ex::throwUOE(DataUnit::ice_staticId(), v);
-    }
-}
-/// \endcond
 
 DSF::DataReceiver::~DataReceiver()
 {
@@ -446,7 +305,6 @@ DSF::DataReceiver::_iceD_sendData(::IceInternal::Incoming& inS, const ::Ice::Cur
     ::Ice::InputStream* istr = inS.startReadParams();
     DataUnitSeq iceP_dataSeq;
     istr->read(iceP_dataSeq);
-    istr->readPendingValues();
     inS.endReadParams();
     this->sendData(iceP_dataSeq, current);
     inS.writeEmptyParams();

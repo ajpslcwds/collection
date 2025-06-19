@@ -1,27 +1,95 @@
-#include "DataReceiverI.h"
+#include "../keyvalue.h"
 #include <Ice/Ice.h>
-#include <memory>
+#include <chrono>
+#include <fstream>
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
+using namespace std;
+using namespace DSF;
+inline uint64_t NowMillisecond()
+{
+    using namespace std::chrono;
+    auto now = system_clock::now();
+
+    auto milliseconds_since_epoch = duration_cast<milliseconds>(now.time_since_epoch()).count();
+
+    return static_cast<uint64_t>(milliseconds_since_epoch);
+}
+
+class DataReceiverI : public DataReceiver
+{
+  public:
+    virtual void sendData(const DataUnitSeq &dataSeq, const Ice::Current &) override
+    {
+        json jArray = json::array();
+
+        for (const auto &data : dataSeq)
+        {
+            json j;
+            j["name"] = data.strName;
+            j["time"] = data.lTime;
+            j["type"] = data.eType;
+
+            switch (data.eType)
+            {
+            case DSF::ValueType::Decimal:
+                j["value"] = data.dValue;
+                break;
+            case DSF::ValueType::Integer:
+                j["value"] = data.lValue;
+                break;
+            case DSF::ValueType::Boolean:
+                j["value"] = data.bValue;
+                break;
+            case DSF::ValueType::Text:
+                j["value"] = data.strValue;
+                break;
+            default:
+                j["value"] = nullptr;
+                break;
+            }
+
+            jArray.push_back(j);
+        }
+        std::ofstream file("data.json", std::ios::app); // 使用 std::ios::app 模式打开文件
+        file << jArray.dump(4) << std::endl;
+        file.close();
+
+        cout << NowMillisecond() << "\nReceived " << dataSeq.size() << " entries and wrote to data.json" << endl;
+    }
+};
+
+class Server
+{
+  public:
+    int run()
+    {
+        try
+        {
+            int argc = 0;
+            const char **argv = nullptr;
+            Ice::CommunicatorHolder ich(argc, argv);
+            auto adapter =
+                ich->createObjectAdapterWithEndpoints("DataReceiverAdapter", "default -h 127.0.0.1 -p 61235");
+            Ice::ObjectPtr receiver = new DataReceiverI;
+            adapter->add(receiver, Ice::stringToIdentity("DataReceiver"));
+            adapter->activate();
+
+            ich->waitForShutdown();
+            return 0;
+        }
+        catch (const Ice::Exception &ex)
+        {
+            cerr << ex << endl;
+            return 1;
+        }
+    }
+};
 
 int main(int argc, char *argv[])
 {
-    try
-    {
-        Ice::CommunicatorHolder ich(argc, argv);
-        auto adapter = ich->createObjectAdapterWithEndpoints("DataReceiverAdapter", "default -p 61236");
-
-        // auto servant = std::make_shared<DataReceiverI>();
-        // adapter->add(Ice::ObjectPtr(servant), Ice::stringToIdentity("receiver"));
-        adapter->add(new DataReceiverI, Ice::stringToIdentity("receiver"));
-
-        adapter->activate();
-        std::cout << "Server started." << std::endl;
-        ich->waitForShutdown();
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << "Exception: " << e.what() << std::endl;
-        return 1;
-    }
+    Server server;
+    server.run();
 
     return 0;
 }

@@ -56,7 +56,6 @@
 namespace DSF
 {
 
-class DataUnit;
 class DataReceiver;
 class DataReceiverPrx;
 
@@ -69,11 +68,39 @@ enum class ValueType : unsigned char
 {
     Decimal,
     Integer,
-    Bool,
+    Boolean,
     Text
 };
 
-using DataUnitSeq = ::std::vector<::std::shared_ptr<DataUnit>>;
+struct DataUnit
+{
+    ::std::string strName;
+    long long int lTime;
+    ValueType eType;
+    double dValue;
+    long long int lValue;
+    bool bValue;
+    ::std::string strValue;
+
+    /**
+     * Obtains a tuple containing all of the exception's data members.
+     * @return The data members in a tuple.
+     */
+
+    std::tuple<const ::std::string&, const long long int&, const ValueType&, const double&, const long long int&, const bool&, const ::std::string&> ice_tuple() const
+    {
+        return std::tie(strName, lTime, eType, dValue, lValue, bValue, strValue);
+    }
+};
+
+using DataUnitSeq = ::std::vector<DataUnit>;
+
+using Ice::operator<;
+using Ice::operator<=;
+using Ice::operator>;
+using Ice::operator>=;
+using Ice::operator==;
+using Ice::operator!=;
 
 }
 
@@ -123,67 +150,6 @@ public:
     virtual bool _iceDispatch(::IceInternal::Incoming&, const ::Ice::Current&) override;
     /// \endcond
 };
-
-}
-
-namespace DSF
-{
-
-class DataUnit : public ::Ice::ValueHelper<DataUnit, ::Ice::Value>
-{
-public:
-
-    virtual ~DataUnit();
-
-    DataUnit() = default;
-
-    DataUnit(const DataUnit&) = default;
-    DataUnit(DataUnit&&) = default;
-    DataUnit& operator=(const DataUnit&) = default;
-    DataUnit& operator=(DataUnit&&) = default;
-
-    /**
-     * One-shot constructor to initialize all data members.
-     */
-    DataUnit(const ::std::string& strName, long long int lTime, ValueType eType, const Ice::optional<double>& dValue, const Ice::optional<long long int>& lValue, const Ice::optional<bool>& bValue, const Ice::optional<::std::string>& strValue) :
-        strName(::std::move(strName)),
-        lTime(lTime),
-        eType(eType),
-        dValue(dValue),
-        lValue(lValue),
-        bValue(bValue),
-        strValue(::std::move(strValue))
-    {
-    }
-
-    /**
-     * Obtains a tuple containing all of the value's data members.
-     * @return The data members in a tuple.
-     */
-
-    std::tuple<const ::std::string&, const long long int&, const ValueType&, const Ice::optional<double>&, const Ice::optional<long long int>&, const Ice::optional<bool>&, const Ice::optional<::std::string>&> ice_tuple() const
-    {
-        return std::tie(strName, lTime, eType, dValue, lValue, bValue, strValue);
-    }
-
-    /**
-     * Obtains the Slice type ID of this value.
-     * @return The fully-scoped type ID.
-     */
-    static const ::std::string& ice_staticId();
-
-    ::std::string strName;
-    long long int lTime;
-    ValueType eType;
-    Ice::optional<double> dValue;
-    Ice::optional<long long int> lValue;
-    Ice::optional<bool> bValue;
-    Ice::optional<::std::string> strValue;
-};
-
-/// \cond INTERNAL
-static DataUnit _iceS_DataUnit_init;
-/// \endcond
 
 }
 
@@ -252,14 +218,12 @@ struct StreamableTraits< ::DSF::ValueType>
     static const bool fixedLength = false;
 };
 
-template<typename S>
-struct StreamWriter<::DSF::DataUnit, S>
+template<>
+struct StreamableTraits<::DSF::DataUnit>
 {
-    static void write(S* ostr, const ::DSF::DataUnit& v)
-    {
-        ostr->writeAll(v.strName, v.lTime, v.eType);
-        ostr->writeAll({1, 2, 3, 4}, v.dValue, v.lValue, v.bValue, v.strValue);
-    }
+    static const StreamHelperCategory helper = StreamHelperCategoryStruct;
+    static const int minWireSize = 28;
+    static const bool fixedLength = false;
 };
 
 template<typename S>
@@ -267,8 +231,7 @@ struct StreamReader<::DSF::DataUnit, S>
 {
     static void read(S* istr, ::DSF::DataUnit& v)
     {
-        istr->readAll(v.strName, v.lTime, v.eType);
-        istr->readAll({1, 2, 3, 4}, v.dValue, v.lValue, v.bValue, v.strValue);
+        istr->readAll(v.strName, v.lTime, v.eType, v.dValue, v.lValue, v.bValue, v.strValue);
     }
 };
 
@@ -278,8 +241,6 @@ struct StreamReader<::DSF::DataUnit, S>
 /// \cond INTERNAL
 namespace DSF
 {
-
-using DataUnitPtr = ::std::shared_ptr<DataUnit>;
 
 using DataReceiverPtr = ::std::shared_ptr<DataReceiver>;
 using DataReceiverPrxPtr = ::std::shared_ptr<DataReceiverPrx>;
@@ -295,12 +256,6 @@ namespace IceProxy
 namespace DSF
 {
 
-class DataUnit;
-/// \cond INTERNAL
-void _readProxy(::Ice::InputStream*, ::IceInternal::ProxyHandle< ::IceProxy::DSF::DataUnit>&);
-::IceProxy::Ice::Object* upCast(::IceProxy::DSF::DataUnit*);
-/// \endcond
-
 class DataReceiver;
 /// \cond INTERNAL
 void _readProxy(::Ice::InputStream*, ::IceInternal::ProxyHandle< ::IceProxy::DSF::DataReceiver>&);
@@ -313,17 +268,6 @@ void _readProxy(::Ice::InputStream*, ::IceInternal::ProxyHandle< ::IceProxy::DSF
 
 namespace DSF
 {
-
-class DataUnit;
-/// \cond INTERNAL
-::Ice::Object* upCast(DataUnit*);
-/// \endcond
-typedef ::IceInternal::Handle< DataUnit> DataUnitPtr;
-typedef ::IceInternal::ProxyHandle< ::IceProxy::DSF::DataUnit> DataUnitPrx;
-typedef DataUnitPrx DataUnitPrxPtr;
-/// \cond INTERNAL
-void _icePatchObjectPtr(DataUnitPtr&, const ::Ice::ObjectPtr&);
-/// \endcond
 
 class DataReceiver;
 /// \cond INTERNAL
@@ -345,11 +289,22 @@ enum ValueType
 {
     Decimal,
     Integer,
-    Bool,
+    Boolean,
     Text
 };
 
-typedef ::std::vector<DSF::DataUnitPtr> DataUnitSeq;
+struct DataUnit
+{
+    ::std::string strName;
+    ::Ice::Long lTime;
+    ValueType eType;
+    ::Ice::Double dValue;
+    ::Ice::Long lValue;
+    bool bValue;
+    ::std::string strValue;
+};
+
+typedef ::std::vector<DSF::DataUnit> DataUnitSeq;
 
 }
 
@@ -371,23 +326,6 @@ namespace IceProxy
 
 namespace DSF
 {
-
-class DataUnit : public virtual ::Ice::Proxy<DataUnit, ::IceProxy::Ice::Object>
-{
-public:
-
-    /**
-     * Obtains the Slice type ID corresponding to this class.
-     * @return A fully-scoped type ID.
-     */
-    static const ::std::string& ice_staticId();
-
-protected:
-    /// \cond INTERNAL
-
-    virtual ::IceProxy::Ice::Object* _newInstance() const;
-    /// \endcond
-};
 
 class DataReceiver : public virtual ::Ice::Proxy<DataReceiver, ::IceProxy::Ice::Object>
 {
@@ -450,106 +388,6 @@ protected:
 
 namespace DSF
 {
-
-class DataUnit : public virtual ::Ice::Object
-{
-public:
-
-    typedef DataUnitPrx ProxyType;
-    typedef DataUnitPtr PointerType;
-
-    virtual ~DataUnit();
-
-    DataUnit()
-    {
-    }
-
-    /**
-     * One-shot constructor to initialize all data members.
-     */
-    DataUnit(const ::std::string& strName, ::Ice::Long lTime, ValueType eType, const IceUtil::Optional< ::Ice::Double>& dValue, const IceUtil::Optional< ::Ice::Long>& lValue, const IceUtil::Optional<bool>& bValue, const IceUtil::Optional< ::std::string>& strValue) :
-        strName(strName),
-        lTime(lTime),
-        eType(eType),
-        dValue(dValue),
-        lValue(lValue),
-        bValue(bValue),
-        strValue(strValue)
-    {
-    }
-
-    /**
-     * Polymporphically clones this object.
-     * @return A shallow copy of this object.
-     */
-    virtual ::Ice::ObjectPtr ice_clone() const;
-
-    /**
-     * Determines whether this object supports an interface with the given Slice type ID.
-     * @param id The fully-scoped Slice type ID.
-     * @param current The Current object for the invocation.
-     * @return True if this object supports the interface, false, otherwise.
-     */
-    virtual bool ice_isA(const ::std::string& id, const ::Ice::Current& current = ::Ice::emptyCurrent) const;
-
-    /**
-     * Obtains a list of the Slice type IDs representing the interfaces supported by this object.
-     * @param current The Current object for the invocation.
-     * @return A list of fully-scoped type IDs.
-     */
-    virtual ::std::vector< ::std::string> ice_ids(const ::Ice::Current& current = ::Ice::emptyCurrent) const;
-
-    /**
-     * Obtains a Slice type ID representing the most-derived interface supported by this object.
-     * @param current The Current object for the invocation.
-     * @return A fully-scoped type ID.
-     */
-    virtual const ::std::string& ice_id(const ::Ice::Current& current = ::Ice::emptyCurrent) const;
-
-    /**
-     * Obtains the Slice type ID corresponding to this class.
-     * @return A fully-scoped type ID.
-     */
-    static const ::std::string& ice_staticId();
-
-    /**
-     * Obtains a value factory that instantiates this class.
-     * @return The value factory.
-     */
-    static ::Ice::ValueFactoryPtr ice_factory();
-
-protected:
-
-    /// \cond STREAM
-    virtual void _iceWriteImpl(::Ice::OutputStream*) const;
-    virtual void _iceReadImpl(::Ice::InputStream*);
-    /// \endcond
-
-public:
-
-    ::std::string strName;
-    ::Ice::Long lTime;
-    ValueType eType;
-    IceUtil::Optional< ::Ice::Double> dValue;
-    IceUtil::Optional< ::Ice::Long> lValue;
-    IceUtil::Optional<bool> bValue;
-    IceUtil::Optional< ::std::string> strValue;
-};
-/// \cond INTERNAL
-static ::Ice::ValueFactoryPtr _iceS_DataUnit_init = ::DSF::DataUnit::ice_factory();
-/// \endcond
-
-/// \cond INTERNAL
-inline bool operator==(const DataUnit& lhs, const DataUnit& rhs)
-{
-    return static_cast<const ::Ice::Object&>(lhs) == static_cast<const ::Ice::Object&>(rhs);
-}
-
-inline bool operator<(const DataUnit& lhs, const DataUnit& rhs)
-{
-    return static_cast<const ::Ice::Object&>(lhs) < static_cast<const ::Ice::Object&>(rhs);
-}
-/// \endcond
 
 class DataReceiver : public virtual ::Ice::Object
 {
@@ -633,6 +471,14 @@ struct StreamableTraits< ::DSF::ValueType>
     static const bool fixedLength = false;
 };
 
+template<>
+struct StreamableTraits< ::DSF::DataUnit>
+{
+    static const StreamHelperCategory helper = StreamHelperCategoryStruct;
+    static const int minWireSize = 28;
+    static const bool fixedLength = false;
+};
+
 template<typename S>
 struct StreamWriter< ::DSF::DataUnit, S>
 {
@@ -641,10 +487,10 @@ struct StreamWriter< ::DSF::DataUnit, S>
         ostr->write(v.strName);
         ostr->write(v.lTime);
         ostr->write(v.eType);
-        ostr->write(1, v.dValue);
-        ostr->write(2, v.lValue);
-        ostr->write(3, v.bValue);
-        ostr->write(4, v.strValue);
+        ostr->write(v.dValue);
+        ostr->write(v.lValue);
+        ostr->write(v.bValue);
+        ostr->write(v.strValue);
     }
 };
 
@@ -656,10 +502,10 @@ struct StreamReader< ::DSF::DataUnit, S>
         istr->read(v.strName);
         istr->read(v.lTime);
         istr->read(v.eType);
-        istr->read(1, v.dValue);
-        istr->read(2, v.lValue);
-        istr->read(3, v.bValue);
-        istr->read(4, v.strValue);
+        istr->read(v.dValue);
+        istr->read(v.lValue);
+        istr->read(v.bValue);
+        istr->read(v.strValue);
     }
 };
 
