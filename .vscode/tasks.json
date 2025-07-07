@@ -12,9 +12,7 @@
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}",
                 "-std=c++17",
-                "-lpthread",
-                "-lhiredis",
-                "-lboost_filesystem",
+                "-lpthread"
             ],
             "options": {
                 "cwd": "${fileDirname}"
