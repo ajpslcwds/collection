@@ -167,12 +167,18 @@ template <> int test_read<std::string>(const std::string &redis_key)
     return 0;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
     context_ = redisConnect("127.0.0.1", 6380);
+    if (argc < 2)
+    {
+        std::cout << "please input tag_name" << std::endl;
+        return -1;
+    }
 
+    std::string tag_name = argv[1];
     // test_write<int32_t>(std::string("STD::TWZQ"), 0xffff);
-    test_read<std::string>(std::string("STD::WZQ_TSTR"));
+    test_read<std::string>(tag_name);
 
     redisFree(context_);
     return 0;

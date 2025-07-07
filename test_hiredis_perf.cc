@@ -9,6 +9,7 @@
  * /home/wzq/code/collection/test_hiredis -std=c++17 -lpthread -lhiredis
  **************************************************************/
 #include <chrono>
+#include <csignal>
 #include <cstring>
 #include <hiredis/hiredis.h>
 #include <iostream>
@@ -16,7 +17,6 @@
 #include <stdint.h>
 #include <string>
 #include <thread>
-#include <csignal>
 
 constexpr size_t TIME_SECOND_LENGTH = 4;
 constexpr size_t TIME_MILLISECOND_LENGTH = 2;
@@ -56,7 +56,7 @@ int32_t get_redis_data(const char *key, char *value)
         if (reply->type == REDIS_REPLY_STRING && reply->str != nullptr)
         {
             value = reply->str;
-            std::cout << "read_success~" << std::endl;
+            // std::cout << "read_success~" << std::endl;
         }
         else
         {
@@ -130,7 +130,7 @@ void test_read(bool flag)
         if (flag)
             redisReconnect(context_);
         get_redis_data("wzq_key", buffer);
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        // std::this_thread::sleep_for(std::chrono::seconds(1));
     }
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
@@ -160,16 +160,19 @@ void test_write(bool flag)
 }
 int main(int args, char *argv[])
 {
+    std::cout << sizeof(TestData) << std::endl;
     std::signal(SIGPIPE, SIG_IGN);
     if (args == 2)
         context_ = redisConnect("127.0.0.1", 6380);
     else
         context_ = redisConnectUnix("/etc/redis/redis.sock");
-    // test_read(true);
-    // test_write(true);
 
+    test_write(true);
+    test_read(true);
+
+    test_write(false);
     test_read(false);
-    // test_write(false);
+
     redisFree(context_);
     return 0;
 }
