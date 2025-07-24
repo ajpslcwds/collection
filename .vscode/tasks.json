@@ -12,7 +12,10 @@
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}",
                 "-std=c++17",
-                "-lpthread"
+                "-lbenchmark",
+                "-lpthread",
+                "-lhiredis"
+                // "/home/wzq/code/dr/library/libhiredis.a"
             ],
             "options": {
                 "cwd": "${fileDirname}"

@@ -84,7 +84,7 @@ class FloatHexConverter
         uint32_t bits;
         std::memcpy(&bits, &value, sizeof(float));
         std::stringstream ss;
-        ss << std::hex << std::setw(8) << std::setfill('0') << bits;
+        ss << std::uppercase << std::hex << std::setw(8) << std::setfill('0') << bits;
         return ss.str();
     }
 
@@ -94,7 +94,7 @@ class FloatHexConverter
         uint64_t bits;
         std::memcpy(&bits, &value, sizeof(double));
         std::stringstream ss;
-        ss << std::hex << std::setw(16) << std::setfill('0') << bits;
+        ss << std::uppercase << std::hex << std::setw(16) << std::setfill('0') << bits;
         return ss.str();
     }
 
@@ -198,7 +198,7 @@ int main()
 
     std::cout << "---------------------------------" << std::endl;
 
-    std::vector<std::string> dss = {"000fffffffffffff", "7fefffffffffffff", "800fffffffffffff", "ffefffffffffffff",
+    std::vector<std::string> dss = {"000ffffffffffFFf", "7fefffffffffffff", "800fffffffffffff", "ffefffffffffffff",
                                     "3ff0000000000000"};
     for (std::string &ds : dss)
     {

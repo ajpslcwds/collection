@@ -1,31 +1,21 @@
 import redis
 import struct
-import time
-import sys
-from datetime import datetime
 
-# 初始化 Redis 连接
-r = redis.Redis(host='localhost', port=6380, db=0)
+# 连接 Redis 服务器（以二进制模式，不解码）
+r = redis.Redis(host='localhost', port=6380, decode_responses=False)
 
-# Redis 中的 key
-# key = "STD::DS_TINT"
-key = sys.argv[1]
+# 开启 pipeline（非事务模式）
+pipe = r.pipeline(transaction=False)
 
-while True:
-    value = r.get(key)
+# 批量写入 100 个键值对，键为 b'mykey_1' 到 b'mykey_100'，值为 int 的二进制表示
+for i in range(1, 101):
+    key = f"mykey_{i}".encode('utf-8')  # 将字符串转换为字节
+    value = struct.pack(">i", i)        # 将整数打包为4字节二进制（大端序）
+    pipe.set(key, value)
 
-    if value is None:
-        print(f"❌ Key '{key}' not found.")
-    elif len(value) != 10:
-        print(f"⚠️ Binary format error: expected 10 bytes, got {len(value)}.")
-    else:
-        try:
-            # 解包为 int16 + int32 + int16 + int16（共10字节）
-            int_val, sec, msec, quality = struct.unpack("<hihh", value)
-            # 打印一行数据
-            print(f"🔢 val: {int_val} | 🕒 sec: {sec} | msec: {msec} | 📶 quality: {quality}" )
+# 执行所有命令
+results = pipe.execute()
 
-        except struct.error as e:
-            print(f"❌ Unpack error: {e}")
-
-    time.sleep(0.01)  # 每 10 毫秒（0.01 秒）读取一次
+# 输出结果
+for i, res in enumerate(results):
+    print(f"Reply {i}: {res}")
