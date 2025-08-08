@@ -19,8 +19,18 @@ inline uint64_t NowMillisecond()
 class DataReceiverI : public DataReceiver
 {
   public:
-    virtual void sendData(const DataUnitSeq &dataSeq, const Ice::Current &) override
+    virtual void sendData(const DataUnitSeq &dataSeq, const Ice::Current &current) override
     {
+        auto endpoint = current.con->getInfo();
+        auto tcpInfo = Ice::TCPConnectionInfoPtr::dynamicCast(endpoint);
+
+        if (tcpInfo)
+        {
+            std::string clientIP = tcpInfo->remoteAddress;
+            int clientPort = tcpInfo->remotePort;
+            printf("Client IP: %s, Port: %d\n", clientIP.c_str(), clientPort);
+        }
+        
         json jArray = json::array();
 
         for (const auto &data : dataSeq)
@@ -69,6 +79,7 @@ class Server
             int argc = 0;
             const char **argv = nullptr;
             Ice::CommunicatorHolder ich(argc, argv);
+            // "default -h 127.0.0.1 -p 61235"
             auto adapter =
                 ich->createObjectAdapterWithEndpoints("DataReceiverAdapter", "default -h 127.0.0.1 -p 61235");
             Ice::ObjectPtr receiver = new DataReceiverI;

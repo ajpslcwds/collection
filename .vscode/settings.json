@@ -59,6 +59,16 @@
         "streambuf": "cpp",
         "thread": "cpp",
         "typeinfo": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "bitset": "cpp",
+        "charconv": "cpp",
+        "complex": "cpp",
+        "list": "cpp",
+        "set": "cpp",
+        "regex": "cpp",
+        "source_location": "cpp",
+        "shared_mutex": "cpp",
+        "cinttypes": "cpp",
+        "variant": "cpp"
     }
 }
