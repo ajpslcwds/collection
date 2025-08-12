@@ -63,14 +63,9 @@ void test_async()
         // std::async(std::launch::async, std::bind(&func, i));  // 每次一个线程，逐个调用
         // auto fut = std::async(std::launch::async, std::bind(&func, i));   // 和上面一样，每次一个线程，逐个调用
 
-        // fut1 = std::async(std::launch::async, std::bind(&func, i)); // 两个线程跑两个，完了在跑两个
+        fut1 = std::async(std::launch::async, std::bind(&func, i)); // 两个线程跑两个，完了在跑两个
 
-        fut[i] = std::async(std::launch::async, std::bind(&func, i)); // 符合期望的四个线程同时跑
-    }
-
-    for (int i = 0; i < 4; i++)
-    {
-        fut[i].detach();
+        // fut[i] = std::async(std::launch::async, std::bind(&func, i)); // 符合期望的四个线程同时跑
     }
 
     for (int i = 0; i < 4; i++)

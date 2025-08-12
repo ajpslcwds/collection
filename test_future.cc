@@ -10,7 +10,8 @@ std::future<int> asyncTask(bool flag)
 }
 int main()
 {
-    auto res = asyncTask(0);
+    auto res = asyncTask(1);
+    // std::this_thread::sleep_for(std::chrono::milliseconds(100));
     if (res.valid())
 
     {
