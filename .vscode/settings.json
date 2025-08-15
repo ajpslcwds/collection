@@ -68,6 +68,10 @@
         "*.ipp": "cpp",
         "any": "cpp",
         "forward_list": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "charconv": "cpp",
+        "regex": "cpp",
+        "source_location": "cpp",
+        "shared_mutex": "cpp"
     }
 }
