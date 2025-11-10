@@ -80,6 +80,34 @@ class Timer
         });
     }
 
+    void start_4(std::chrono::microseconds interval, bool repeat = true)
+    {
+        stop();
+        running_ = true;
+        thread_ = std::thread([=]() {
+            while (running_)
+            {
+                auto begin = std::chrono::steady_clock::now();
+                std::this_thread::sleep_until(begin + interval);
+                auto end = std::chrono::steady_clock::now();
+                if (end - begin >= interval * 1.6)
+                {
+                    std::cout << "Timer4 tick: "
+                              << std::chrono::duration_cast<std::chrono::microseconds>(begin.time_since_epoch()).count()
+                              << " ,"
+                              << std::chrono::duration_cast<std::chrono::microseconds>(end.time_since_epoch()).count()
+                              << std::endl;
+                }
+
+                if (!running_)
+                    break;
+
+                if (!repeat)
+                    break;
+            }
+        });
+    }
+
     // 停止定时器
     void stop()
     {
@@ -114,12 +142,15 @@ int main()
     //               std::chrono::milliseconds(10), true);
     // std::this_thread::sleep_for(std::chrono::seconds(2)); // 主线程休眠
 
-    timer.start_2([] { std::cout << "Timer2 tick: " << GetCurMillsSeconds() << std::endl; },
-                  std::chrono::milliseconds(10), true);
-    std::this_thread::sleep_for(std::chrono::seconds(2)); // 主线程休眠
+    // timer.start_2([] { std::cout << "Timer2 tick: " << GetCurMillsSeconds() << std::endl; },
+    //               std::chrono::milliseconds(2), true);
+    // std::this_thread::sleep_for(std::chrono::seconds(2)); // 主线程休眠
 
-    timer.start_3([] { std::cout << "Timer3 tick: " << GetCurMillsSeconds() << std::endl; },
-                  std::chrono::milliseconds(10), true);
+    // timer.start_3([] { std::cout << "Timer3 tick: " << GetCurMillsSeconds() << std::endl; },
+    //               std::chrono::milliseconds(1), true);
+    // std::this_thread::sleep_for(std::chrono::seconds(2)); // 主线程休眠
+
+    timer.start_4(std::chrono::microseconds(1000), true);
     std::this_thread::sleep_for(std::chrono::seconds(2)); // 主线程休眠
 
     timer.stop();

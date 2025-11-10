@@ -1,4 +1,4 @@
-#include "json.hpp"
+#include "nlohmann/json.hpp"
 #include <atomic>
 #include <future>
 #include <iostream>
@@ -64,20 +64,3 @@ int main1(int argc, char *argv[])
     return 0;
 }
 
-std::string toHexString(const std::vector<uint8_t> &data)
-{
-    std::ostringstream oss;
-    for (uint8_t byte : data)
-    {
-        oss << std::hex << std::setfill('0') << std::setw(2) << (int)byte;
-    }
-    return oss.str();
-}
-
-int main()
-{
-    un data = {0xFF};
-    nlohmann::json j = nlohmann::json::binary(data);
-
-    std::cout << j.dump() << std::endl; // 输出: {"_json_binary": "<raw>"}
-}
