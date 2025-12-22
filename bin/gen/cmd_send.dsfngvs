@@ -1,0 +1,18 @@
+{
+    "SendNGVS": [
+        {
+            "Name": "cmd_send",
+            "NGVSVarNameSpace": "STD",
+            "LocalIPAddress": "127.0.0.1",
+            "LocalPort": 9000,
+            "Protocol": 0,
+		    "NGVSVariables": [
+                {
+                    "Name": "CONCTRL_COMMOND",
+                    "TypeOf": "STRING",
+                    "Length": 1024
+                }
+			]
+        }
+    ]
+}

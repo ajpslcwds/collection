@@ -1,5 +1,0 @@
-# .clang-format
-# Google C++ Style Guide (2025 最新版)
-# 直接复制保存为 .clang-format 放在项目根目录
-Language:        Cpp
-BasedOnStyle:    Google
