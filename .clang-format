@@ -1,0 +1,7 @@
+# 基于 Google C++ Style
+BasedOnStyle: Google
+Language: Cpp
+
+# 行宽
+ColumnLimit: 120
+
