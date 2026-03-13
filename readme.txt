@@ -1,0 +1,31 @@
+MySQL 8.4.6 建表语句
+CREATE TABLE T_DD_SM_VAR (
+    TAG_ID INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '唯一标识，自增，二进制首位为0',
+    TAG_NAME VARCHAR(256) NOT NULL COMMENT '变量名称',
+    NODE_ID INT UNSIGNED NOT NULL COMMENT '所属节点ID',
+    NAMESPACE VARCHAR(64) NOT NULL COMMENT '命名空间',
+    TYPE_ID VARCHAR(64) NOT NULL COMMENT '变量类型',
+    TYPE_EXTRA JSON COMMENT '类型的补充信息，{ELE_TYPE,STR_LENGTH,MODEL_ID,RANGE}',
+    IO_ADDR TEXT COMMENT '地址（结构体和数组），优先级大于属性表',
+    SCAN_INTV INT COMMENT '扫描周期(结构体和数组），优先级大于属性表',
+    DEVICE_ID INT UNSIGNED COMMENT '设备ID（结构体和数组），优先级大于属性表',
+    PRIMARY KEY (TAG_ID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='变量表';
+
+
+SQLite 3.31.1 建表语句
+CREATE TABLE T_DD_SM_VAR (
+    TAG_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+    TAG_NAME VARCHAR(256) NOT NULL,
+    NODE_ID INTEGER NOT NULL,
+    NAMESPACE VARCHAR(64) NOT NULL,
+    TYPE_ID VARCHAR(64) NOT NULL,
+    TYPE_EXTRA TEXT,
+    IO_ADDR TEXT,
+    SCAN_INTV INTEGER,
+    DEVICE_ID INTEGER
+);
+
+前端的配置写入sqlite ,下发sqlite.db 文件。配置信息需要同步给后端的mysql ,然后后端的c++ 程序识别那些发生了变化，进行数据动态加载。
+我需要同步sqlite  的数据到mysql 中，并且知道记录的增删改情况。
+帮我用python 实现一下。
