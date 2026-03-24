@@ -1,0 +1,47 @@
+{
+"-- select * from T_DD_SM_VAR_GRP tdsvg; \r\nselect * from T_DD_SM_VAR tdsv": [
+	{
+		"TAG_ID" : 1,
+		"TAG_NAME" : "DS_DINT",
+		"NODE_ID" : 1,
+		"NAMESPACE" : "STD",
+		"TYPE_ID" : "10",
+		"TYPE_EXTRA" : null,
+		"IO_ADDR" : "",
+		"SCAN_INTV" : null,
+		"DEVICE_ID" : null
+	},
+	{
+		"TAG_ID" : 2,
+		"TAG_NAME" : "DS_UDINT",
+		"NODE_ID" : 1,
+		"NAMESPACE" : "STD",
+		"TYPE_ID" : "11",
+		"TYPE_EXTRA" : null,
+		"IO_ADDR" : "",
+		"SCAN_INTV" : null,
+		"DEVICE_ID" : null
+	},
+	{
+		"TAG_ID" : 3,
+		"TAG_NAME" : "DS_PERF_INT",
+		"NODE_ID" : 1,
+		"NAMESPACE" : "STD",
+		"TYPE_ID" : "26",
+		"TYPE_EXTRA" : "{\"RANGE\": [{\"end\": 200, \"start\": 1}], \"ELE_TYPE\": \"INT\", \"MODEL_ID\": 0, \"STR_LENGTH\": 0}",
+		"IO_ADDR" : null,
+		"SCAN_INTV" : null,
+		"DEVICE_ID" : null
+	},
+	{
+		"TAG_ID" : 4,
+		"TAG_NAME" : "DS_DMODEL1",
+		"NODE_ID" : 1,
+		"NAMESPACE" : "STD",
+		"TYPE_ID" : "27",
+		"TYPE_EXTRA" : "{\"RANGE\": [], \"ELE_TYPE\": \"\", \"MODEL_ID\": 1, \"STR_LENGTH\": 0}",
+		"IO_ADDR" : null,
+		"SCAN_INTV" : null,
+		"DEVICE_ID" : null
+	}
+]}
