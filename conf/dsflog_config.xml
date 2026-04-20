@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="gb2312"?>
+<LogConf ChkCfgMdfyPeriod="5">
+  <!-- ChkCfgMdfyPeriod: 检查配置文件变更的间隔秒数，默认 5s -->
+  <!-- 日志级别由高到低: CRITICAL ERROR WARN INFO DEBUG TRACE -->
+  <!-- Async="1" 异步写入, Async="0" 同步写入, 默认异步 -->
+  <!-- SaveDays>0 时按天轮转并保留指定天数, 此时 FileMaxKb/FileMaxNo 无效 -->
+  <!-- LogOnMonitor="1" 同时输出到控制台; Pattern 为空则用默认格式 -->
+   <!--FileName 指定日志文件路径 不配置使用文件路径使用程序执行目录下的标签名称 -->
+
+  <General CurrentLogLV="DEBUG" SaveDays="0" FileMaxKb="102400" FileMaxNo="5" LogOnMonitor="1"
+    Async="1" Pattern=""/>
+
+  <demo CurrentLogLV="DEBUG" SaveDays="0" FileMaxKb="2000" FileMaxNo="5" LogOnMonitor="1" Async="1"
+    Pattern="" />
+  <process1 CurrentLogLV="INFO" SaveDays="0" FileMaxKb="200" FileMaxNo="3" LogOnMonitor="1" Async="1"
+    Pattern="" FileName="../logs/process111.log" />
+  <process2 CurrentLogLV="INFO" SaveDays="0" FileMaxKb="2000" FileMaxNo="5" LogOnMonitor="0"
+    Async="0" Pattern="" />
+
+</LogConf>
